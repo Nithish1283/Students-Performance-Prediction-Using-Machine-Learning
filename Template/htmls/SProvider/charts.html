@@ -1,0 +1,57 @@
+{% extends 'SProvider/design1.html' %}
+{% block researchblock %}
+
+<script>
+window.onload = function() {
+    var chart = new CanvasJS.Chart("chartContainer", {
+        animationEnabled: true,
+        theme: "light2",
+        title: {
+            text: "Searched Student Performance Results",
+            fontFamily: "Outfit",
+            fontWeight: "bold",
+            fontSize: 20
+        },
+        data: [{
+            {% if chart_type == "line" %}
+                type: "line",
+            {% elif chart_type == "pie" %}
+                type: "pie",
+            {% elif chart_type == "spline" %}
+                type: "spline",
+            {% endif %}
+            startAngle: 240,
+            yValueFormatString: "##0.00\"%\"",
+            indexLabel: "{label} {y}",
+            dataPoints: [
+                {% for o in form %}
+                    {y: {{o.dcount}}, label: "{{o.names}}"},
+                {% endfor %}
+            ]
+        }]
+    });
+    chart.render();
+}
+</script>
+
+<div class="container">
+    <h2 class="style1 text-center">Searched Student Performance Results</h2>
+    <hr>
+    <div class="chart-layout">
+        <!-- Sidebar Navigation -->
+        <div class="chart-sidebar">
+            <h3>Select Chart Type</h3>
+            <a href="{% url 'charts' 'pie' %}">Pie Chart</a>
+            <a href="{% url 'charts' 'line' %}">Line Chart</a>
+            <a href="{% url 'charts' 'spline' %}">Spline Chart</a>
+        </div>
+
+        <!-- Chart Container -->
+        <div class="chart-content">
+            <div id="chartContainer" style="height: 380px; width: 100%;"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+{% endblock %}
