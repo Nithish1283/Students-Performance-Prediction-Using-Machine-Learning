@@ -41,7 +41,7 @@ class performance_ratio_model(models.Model):
      Course_Name = models.CharField(max_length=300)
      Degree_Name = models.CharField(max_length=300)
      College_Name = models.CharField(max_length=300)
-     perfromance = models.CharField(max_length=300)
+     perfromance = models.FloatField(default=0.0)
 
 
 class review_Model(models.Model):
@@ -61,7 +61,7 @@ class recommend_Model(models.Model):
 
 class search_ratio_model(models.Model):
     names = models.CharField(max_length=300)
-    ratio = models.CharField(max_length=300)
+    ratio = models.FloatField(default=0.0)
 
 
 

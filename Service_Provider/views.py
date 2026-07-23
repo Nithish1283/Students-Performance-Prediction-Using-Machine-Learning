@@ -141,7 +141,35 @@ def charts(request,chart_type):
     chart1 = search_ratio_model.objects.values('names').annotate(dcount=Avg('ratio'))
     return render(request,"SProvider/charts.html", {'form':chart1, 'chart_type':chart_type})
 
+def _populate_performance_ratio():
+    if not performance_ratio_model.objects.exists():
+        obj1 = student_performance_model.objects.values('names',
+                                                        'Enrollment_No',
+                                                        'Gender',
+                                                        'Course_Name',
+                                                        'Degree_Name',
+                                                        'College_Name',
+                                                        'Diagnostic_Assessments_Grade',
+                                                        'Formative_Assessments_Grade',
+                                                        'Interim_Assessments_Grade',
+                                                        'Summative_Assessments_Grade'
+                                                        )
+        for t in obj1:
+            sname = t['names']
+            Eno = t['Enrollment_No']
+            gender = t['Gender']
+            cname = t['Course_Name']
+            dname = t['Degree_Name']
+            collegename = t['College_Name']
+            Diagnostic_Assessments_Grade = t['Diagnostic_Assessments_Grade']
+            Formative_Assessments_Grade = t['Formative_Assessments_Grade']
+            Interim_Assessments_Grade = t['Interim_Assessments_Grade']
+            Summative_Assessments_Grade = t['Summative_Assessments_Grade']
+            performance = ((Diagnostic_Assessments_Grade + Formative_Assessments_Grade + Interim_Assessments_Grade + Summative_Assessments_Grade) / 28) * 100
+            performance_ratio_model.objects.create(names=sname,ENo=Eno,Gender=gender,Course_Name=cname,Degree_Name=dname,College_Name=collegename,perfromance=performance)
+
 def charts1(request,chart_type):
+    _populate_performance_ratio()
     chart1 = performance_ratio_model.objects.values('names').annotate(dcount=Avg('perfromance'))
     return render(request,"SProvider/charts1.html", {'form':chart1, 'chart_type':chart_type})
 
@@ -150,6 +178,7 @@ def View_Student_Performance_Details(request):
     return render(request, 'SProvider/View_Student_Performance_Details.html', {'list_objects': obj})
 
 def likeschart(request,like_chart):
+    _populate_performance_ratio()
     charts =performance_ratio_model.objects.values('names').annotate(dcount=Avg('perfromance'))
     return render(request,"SProvider/likeschart.html", {'form':charts, 'like_chart':like_chart})
 
